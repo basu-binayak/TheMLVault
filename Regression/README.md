@@ -1,5 +1,55 @@
-Certainly! Here's a **clustered summary** of the models mentioned, grouped based on the **situations** or **use cases** where they are most appropriate:
+# The MLVault 
+---
 
+## Should one use `numpy` arrays or `df` in `sklearn` ?
+### ✅ When It's Okay to Use DataFrames Directly
+- **Input features (`X`)**: You can pass a DataFrame.
+- **Target variable (`y`)**: You can use a Series (or a single-column DataFrame).
+- Scikit-learn will internally convert them to NumPy arrays anyway.
+- Feature names from the DataFrame will be used in some places (like in `sklearn` >= 1.0, with `get_feature_names_out`).
+
+**Example:**
+```python
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+import pandas as pd
+
+# Sample DataFrame
+df = pd.DataFrame({
+    'age': [25, 32, 47],
+    'income': [50000, 60000, 80000],
+    'purchased': [0, 1, 1]
+})
+
+X = df[['age', 'income']]
+y = df['purchased']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y)
+
+model = LogisticRegression()
+model.fit(X_train, y_train)
+```
+
+---
+
+### ⚠️ When You Might Want to Convert to NumPy
+1. **Speed**: If you're doing heavy numerical computation, NumPy arrays are a bit faster.
+2. **Custom Models or Algorithms**: Some lower-level or experimental tools might expect NumPy.
+3. **Incompatibility with Some Pipelines or Libraries**: Rare, but sometimes downstream tools (e.g. older libraries or tools like ONNX) prefer NumPy arrays.
+4. **No Column Names Required**: If you don't need column names (like when using PCA, clustering, etc.), NumPy arrays are fine.
+
+**To convert:**
+```python
+X.values  # Or X.to_numpy()
+```
+
+---
+
+### ✅ TL;DR
+> You can safely use **pandas DataFrames** with most scikit-learn models. Conversion to NumPy is not required, but you can do it if you want slightly more speed or are using lower-level tools.
+
+---
+# Regression 
 ---
 
 ### **1. Linear Relationships**
